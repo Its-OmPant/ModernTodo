@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TodoProvider } from "./contexts";
+import { TodoProvider, ThemeProvider } from "./contexts";
 
 import { TodoContainer, TodoForm } from "./components";
 
@@ -7,16 +7,8 @@ import { MdDarkMode } from "react-icons/md";
 import { MdLightMode } from "react-icons/md";
 
 function App() {
+	// Todo related
 	const [todos, setTodos] = useState([]);
-
-	const clearAll = () => {
-		let permission = confirm("Are u sure to delete all items");
-
-		if (permission) {
-			localStorage.clear();
-		}
-		setTodos([]);
-	};
 
 	const addTodo = (todo) => {
 		setTodos((prev) => [{ id: Date.now(), ...todo }, ...prev]);
@@ -42,6 +34,15 @@ function App() {
 		console.log(todos);
 	};
 
+	const clearAll = () => {
+		let permission = confirm("Are u sure to delete all items");
+
+		if (permission) {
+			localStorage.clear();
+		}
+		setTodos([]);
+	};
+
 	useEffect(() => {
 		const todoArray = JSON.parse(localStorage.getItem("todos"));
 		if (todoArray && todoArray.length > 0) setTodos(todoArray);
@@ -51,29 +52,55 @@ function App() {
 		localStorage.setItem("todos", JSON.stringify(todos));
 	}, [todos]);
 
+	// Theme related
+
+	const [theme, setTheme] = useState("light");
+
+	const darkMode = () => {
+		console.log("dark");
+		setTheme("dark");
+	};
+	const lightMode = () => {
+		setTheme("light");
+	};
+
+	useEffect(() => {
+		let doc = document.querySelector("html");
+		doc.classList.remove("dark", "light");
+		doc.classList.add(theme);
+	}, [theme]);
+
 	return (
-		<TodoProvider
-			value={{ todos, addTodo, deleteTodo, updateTodo, toggleIsCompleted }}>
-			<div className="w-screen h-screen overflow-hidden">
-				<nav className="bg-cyan-950 text-white text-center p-3 flex justify-between px-6">
-					<h1 className="text-lg md:text-xl lg:text-2xl">Modern Todo App</h1>
-					<div className="flex ">
-						<button className="text-black p-1 mx-1 rounded-xl">
-							<MdDarkMode size={21} color="white" />
-						</button>
-						<button
-							onClick={clearAll}
-							className="bg-red-200 text-black px-2 mx-1 rounded-xl">
-							Clear All
-						</button>
+		<ThemeProvider value={{ theme, darkMode, lightMode }}>
+			<TodoProvider
+				value={{ todos, addTodo, deleteTodo, updateTodo, toggleIsCompleted }}>
+				<div className="w-screen h-screen overflow-hidden dark:bg-black/95">
+					<nav className="bg-sky-800 m-4 rounded-lg text-white text-center p-3 flex justify-between px-6 shadow-gray-400 shadow-lg dark:bg-sky-950 dark:shadow-gray-800">
+						<h1 className="text-lg md:text-xl lg:text-2xl">Modern Todo App</h1>
+						<div className="flex ">
+							<button
+								onClick={theme == "light" ? darkMode : lightMode}
+								className="text-black p-1 mx-1 rounded-xl">
+								{theme == "light" ? (
+									<MdDarkMode size={21} className="text-white" />
+								) : (
+									<MdLightMode size={21} className="text-white" />
+								)}
+							</button>
+							<button
+								onClick={clearAll}
+								className="bg-white text-red-900 font-bold px-2 mx-1 rounded-xl">
+								Clear All
+							</button>
+						</div>
+					</nav>
+					<div className="w-full mx-auto xsm:w-[90%] sm:w-4/5 md:w-1/2 lg:w-[40%]">
+						<TodoForm />
+						<TodoContainer />
 					</div>
-				</nav>
-				<div className="w-full mx-auto xsm:w-[90%] sm:w-4/5 md:w-1/2 lg:w-[40%] ">
-					<TodoForm />
-					<TodoContainer />
 				</div>
-			</div>
-		</TodoProvider>
+			</TodoProvider>
+		</ThemeProvider>
 	);
 }
 

@@ -7,7 +7,7 @@ function TodoContainer() {
 	return (
 		<div
 			id="todoContainer"
-			className="w-[90%] h-[70vh] mx-auto my-4 overflow-y-scroll px-2">
+			className="w-[90%] h-[70vh] mx-auto my-4 overflow-y-scroll px-2 pb-4">
 			{todos.length > 0 ? (
 				todos.map((t) => <TodoItem key={t.id} todo={t} />)
 			) : (

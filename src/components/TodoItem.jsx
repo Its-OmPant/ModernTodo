@@ -32,7 +32,9 @@ function TodoItem({ todo }) {
 	return (
 		<div
 			className={` ${
-				isChecked ? "bg-pink-200" : "bg-sky-200"
+				isChecked
+					? "bg-green-100 dark:bg-green-300"
+					: "bg-sky-200 dark:bg-sky-300"
 			} w-full my-3 p-4 rounded-md flex justify-between`}>
 			<div className="w-4/5">
 				<input type="checkbox" value={isChecked} onChange={onCheck} />
@@ -51,18 +53,20 @@ function TodoItem({ todo }) {
 			</div>
 			<div id="icons" className="flex justify-around gap-2 w-1/5">
 				{isEditing ? (
-					<button onClick={onSave} className="bg-white rounded-full p-2">
-						<MdSave size={18} className="text-orange-800" />
-					</button>
+					<MdSave onClick={onSave} size={24} className="text-orange-800" />
 				) : (
-					<button onClick={onEdit} className="bg-white rounded-full p-2">
-						<MdEdit size={18} className="text-green-800" />
-					</button>
+					<MdEdit
+						onClick={onEdit}
+						size={24}
+						className="text-green-600 dark:text-green-800"
+					/>
 				)}
 
-				<button onClick={onDelete} className="bg-white rounded-full p-2">
-					<MdDelete size={18} className="text-red-500" />
-				</button>
+				<MdDelete
+					onClick={onDelete}
+					size={24}
+					className="text-red-400 dark:text-red-800"
+				/>
 			</div>
 		</div>
 	);
